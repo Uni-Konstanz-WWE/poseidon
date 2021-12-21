@@ -13,7 +13,7 @@ import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 
-import cv2
+#import cv2
 # note, had to use version 3.2.0.8 otherwise it had its own
 # pyqt packages that conflicted with mine
 
@@ -246,9 +246,9 @@ class MainWindow(QtWidgets.QMainWindow, poseidon_controller_gui.Ui_MainWindow):
 		# ~~~~~~~~~~~~
 
 		# Setting camera action buttons
-		self.ui.camera_connect_BTN.clicked.connect(self.start_camera)
-		self.ui.camera_disconnect_BTN.clicked.connect(self.stop_camera)
-		self.ui.camera_capture_image_BTN.clicked.connect(self.save_image)
+		#self.ui.camera_connect_BTN.clicked.connect(self.start_camera)
+		#self.ui.camera_disconnect_BTN.clicked.connect(self.stop_camera)
+		#self.ui.camera_capture_image_BTN.clicked.connect(self.save_image)
 
 		# ~~~~~~~~~~~
 		# TAB : Setup
@@ -574,63 +574,63 @@ class MainWindow(QtWidgets.QMainWindow, poseidon_controller_gui.Ui_MainWindow):
 		else:
 			self.statusBar().showMessage("No pumps enabled.")
 
-	# ======================
-	# FUNCTIONS : Camera
-	# ======================
-
-	# Initialize the camera
-	def start_camera(self):
-		self.statusBar().showMessage("You clicked START CAMERA")
-		camera_port = 0
-		self.capture = cv2.VideoCapture(camera_port)
-		#TODO check the native resolution of the camera and scale the size down here
-		self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
-		self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 400)
-
-		self.timer = QtCore.QTimer(self)
-		self.timer.timeout.connect(self.update_frame)
-		self.timer.start(5)
-
-	# Update frame function
-	def update_frame(self):
-		ret, self.image = self.capture.read()
-		self.image = cv2.flip(self.image, 1)
-		self.display_image(self.image, 1)
-
-	# Display image in frame
-	def display_image(self, image, window=1):
-		qformat = QtGui.QImage.Format_Indexed8
-		if len(image.shape) == 3: #
-			if image.shape[2] == 4:
-				qformat = QtGui.QImage.Format_RGBA8888
-
-			else:
-				qformat = QtGui.QImage.Format_RGB888
-				#print(image.shape[0], image.shape[1], image.shape[2])
-		self.img_2_display = QtGui.QImage(image, image.shape[1], image.shape[0], image.strides[0], qformat)
-		self.img_2_display = QtGui.QImage.rgbSwapped(self.img_2_display)
-
-		if window == 1:
-			self.ui.imgLabel.setPixmap(QtGui.QPixmap.fromImage(self.img_2_display))
-			self.ui.imgLabel.setScaledContents(False)
-
-	# Save image to set location
-	def save_image(self):
-		if not os.path.exists("./images"):
-			os.mkdir("images")
-
-		self.date_string =  datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-		# Replace semicolons with underscores
-		self.date_string = self.date_string.replace(":","_")
-		self.write_image_loc = './images/'+self.date_string + '.png'
-		cv2.imwrite(self.write_image_loc, self.image)
-		self.statusBar().showMessage("Captured Image, saved to: " + self.write_image_loc)
-
-
-	# Stop camera
-	def stop_camera(self):
-		self.timer.stop()
+#	# ======================
+#	# FUNCTIONS : Camera
+#	# ======================
+#
+#	# Initialize the camera
+#	def start_camera(self):
+#		self.statusBar().showMessage("You clicked START CAMERA")
+#		camera_port = 0
+#		self.capture = cv2.VideoCapture(camera_port)
+#		#TODO check the native resolution of the camera and scale the size down here
+#		self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
+#		self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 400)
+#
+#		self.timer = QtCore.QTimer(self)
+#		self.timer.timeout.connect(self.update_frame)
+#		self.timer.start(5)
+#
+#	# Update frame function
+#	def update_frame(self):
+#		ret, self.image = self.capture.read()
+#		self.image = cv2.flip(self.image, 1)
+#		self.display_image(self.image, 1)
+#
+#	# Display image in frame
+#	def display_image(self, image, window=1):
+#		qformat = QtGui.QImage.Format_Indexed8
+#		if len(image.shape) == 3: #
+#			if image.shape[2] == 4:
+#				qformat = QtGui.QImage.Format_RGBA8888
+#
+#			else:
+#				qformat = QtGui.QImage.Format_RGB888
+#				#print(image.shape[0], image.shape[1], image.shape[2])
+#		self.img_2_display = QtGui.QImage(image, image.shape[1], image.shape[0], image.strides[0], qformat)
+#		self.img_2_display = QtGui.QImage.rgbSwapped(self.img_2_display)
+#
+#		if window == 1:
+#			self.ui.imgLabel.setPixmap(QtGui.QPixmap.fromImage(self.img_2_display))
+#			self.ui.imgLabel.setScaledContents(False)
+#
+#	# Save image to set location
+#	def save_image(self):
+#		if not os.path.exists("./images"):
+#			os.mkdir("images")
+#
+#		self.date_string =  datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#
+#		# Replace semicolons with underscores
+#		self.date_string = self.date_string.replace(":","_")
+#		self.write_image_loc = './images/'+self.date_string + '.png'
+#		cv2.imwrite(self.write_image_loc, self.image)
+#		self.statusBar().showMessage("Captured Image, saved to: " + self.write_image_loc)
+#
+#
+#	# Stop camera
+#	def stop_camera(self):
+#		self.timer.stop()
 
 	# ======================
 	# FUNCTIONS : Setup
